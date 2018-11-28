@@ -1,3 +1,5 @@
+
+
 var image = new ol.style.Circle({   
   radius: 5,
   fill: null,
@@ -298,7 +300,8 @@ function execute(){
 // ==============================================
 
 
-function terdekat(){
+function terdekat()
+{
   //vectorLayer.getSource().clear();
   if(vectorLayer.getSource()){
     vectorLayer.getSource().clear();
@@ -309,59 +312,94 @@ function terdekat(){
   var format = new ol.format.GeoJSON({
   featureProjection:"EPSG:3857"
   });
- 
-   //ini untuk mengghitung
-  var done1= new Promise(function(resolve,reject){
-      var elements=document.forms.lembar.getElementsByTagName('input');
-      // var koor0=$('#koor0');
-      // var koor_0 = koor0.val();
-      var koor1 = $('#koor1');
-      var koor_1 = koor1.val();
-      var temp21 = $('#latitude');
-      var tempx = temp21.val();
+  var jarak1 = 0;
+  var jarak2 = 0;
+  var jarak3 = 0;
+  var jarak4 = 0;
+  var jarak5 = 0;
+  var jarak6 = 0;
+  var semuajarak = [99999,0,0,0,0,0,0];
+  console.log(semuajarak);
+                      var done1= new Promise(function(resolve,reject){
+                      var elements=document.forms.lembar.getElementsByTagName('input');
+                      // var koor0=$('#koor0');
+                      // var koor_0 = koor0.val();
+                      //var koor1 = $('#koor1');
+                      //var koor_1 = koor1.val();
+                      var temp21 = $('#latitude');
+                      var tempx = temp21.val();
 
-      var temp22 = $('#longitude');
-      var tempy = temp22.val();
+                      var temp22 = $('#longitude');
+                      var tempy = temp22.val();
+                      var masjidx1 = -7.28235;
+                      var masjidy1 = 112.79307;
+                      // console.log(tempx);
+                      // console.log(tempy);
+                      // console.log(masjidx1);
+                      // console.log(masjidy1);
+                      //var tempp = koor_0.split(',');
+                      //var tempp1 = koor_1.split(',');
+                      var oReq = new XMLHttpRequest();
+                      oReq.onload = reqListener;
+                      var url="http://localhost/ver/jarak3.php?x1="+tempx+"&y1="+tempy+"&x2="+masjidx1+"&y2="+masjidy1;
+                      // var url="http://localhost/tryMap/jarak.php?x1="+elements[0].value+"&y1="+elements[1].value+"&x2="+elements[2].value+"&y2="+elements[3].value;
+                      oReq.open("GET",url, true);
+                      oReq.send();
+                      //console.log(url);
+                      function reqListener(e) {
+                          geojsonObject = JSON.parse(this.responseText);
+                          resolve(geojsonObject);
+                      }
+                  });
 
-      //var tempp = koor_0.split(',');
-      var tempp1 = koor_1.split(',');
-      var oReq = new XMLHttpRequest();
-      oReq.onload = reqListener;
-      var url="http://localhost/ver/jarak3.php?x1="+tempx+"&y1="+tempy+"&x2="+tempp1[0]+"&y2="+tempp1[1];
-      // var url="http://localhost/tryMap/jarak.php?x1="+elements[0].value+"&y1="+elements[1].value+"&x2="+elements[2].value+"&y2="+elements[3].value;
-      oReq.open("GET",url, true);
-      oReq.send();
-      console.log(url);
-      function reqListener(e) {
-          geojsonObject = JSON.parse(this.responseText);
-          resolve(geojsonObject);
-      }
-  });
+                  done1.then((geojsonObject)=>{
+                    //console.log(geojsonObject);
+                    var points = geojsonObject;
+                    var dist_inMeter = points*51.7647059/1000;
+                    var dist_string = dist_inMeter.toString();
+                    dist_string = dist_string.split(".")
+                    //console.log(dist_string);
+                    var sisa = dist_string[1]
+                    //console.log(sisa);
+                    var total = dist_string[0]+"."+sisa[0];
+                    console.log(total);
+                    semuajarak[1]=total;
+                    console.log(semuajarak);
+                  })
 
-  done1.then((geojsonObject)=>{
-    console.log(geojsonObject);
-    var points = geojsonObject;
-    var dist_inMeter = points*51.7647059/1000;
-    var dist_string = dist_inMeter.toString();
-    dist_string = dist_string.split(".")
-    console.log(dist_string);
-    var sisa = dist_string[1]
-    console.log(sisa);
-    var total = dist_string[0]+"."+sisa[0];
-    var tex = $('#jarakGanti');
-    tex.text("Jarak : "+total+"km");
-    //console.log(vectorLayer.getSource());
-    vectorLayer.getSource().addFeatures(format.readFeatures(geojsonObject.astar));
-    vectorLayer1.getSource().addFeatures(format.readFeatures(geojsonObject.dijkstra));
-    //console.log(vectorLayer.getSource());
-    // var vectorSource = new ol.source.Vector({
-    //   features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
-    // });
+                  var done2= new Promise(function(resolve,reject){
+                      var elements=document.forms.lembar.getElementsByTagName('input');
+                      var temp21 = $('#latitude');
+                      var tempx = temp21.val();
 
-    //var geojsonObject = t;
-    //window.alert(geojsonObject);
-  }).catch((error)=>{
-    console.log(error);
-  });
-  return false; 
+                      var temp22 = $('#longitude');
+                      var tempy = temp22.val();
+                      var masjidx1 = -7.28996;
+                      var masjidy1 = 112.79694;
+                      var oReq = new XMLHttpRequest();
+                      oReq.onload = reqListener;
+                      var url="http://localhost/ver/jarak3.php?x1="+tempx+"&y1="+tempy+"&x2="+masjidx1+"&y2="+masjidy1;
+                      // var url="http://localhost/tryMap/jarak.php?x1="+elements[0].value+"&y1="+elements[1].value+"&x2="+elements[2].value+"&y2="+elements[3].value;
+                      oReq.open("GET",url, true);
+                      oReq.send();
+                      function reqListener(e) {
+                          geojsonObject = JSON.parse(this.responseText);
+                          resolve(geojsonObject);
+                      }
+                  });
+
+                  done2.then((geojsonObject)=>{
+                    var points = geojsonObject;
+                    var dist_inMeter = points*51.7647059/1000;
+                    var dist_string = dist_inMeter.toString();
+                    dist_string = dist_string.split(".")
+                    var sisa = dist_string[1]
+                    var total = dist_string[0]+"."+sisa[0];
+                    semuajarak[2]=total;
+                    console.log(total);
+                    console.log(semuajarak);
+                  })
+
+                  
+                  
 }
